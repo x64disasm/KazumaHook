@@ -1,2 +1,23 @@
 # KazumaHook
-A lightweight minimal trampoline hook for ARM64 devices
+A lightweight and minimal **trampoline hook** for **ARM64** devices.  
+Designed as a clean alternative to third-party dependencies like **Dobby**.
+
+## Usage
+```cpp
+#include "KazumaHook.h"
+
+int64_t (*original_function)(int64_t) = nullptr;
+int64_t detour_function(int64_t a1)
+{
+    return original_function(a1); // Trampoline call
+}
+
+bool is_hooked = KazumaHook(0xFFFFFF, (void*)detour_function, (void**)&original_function);
+if (is_hooked)
+{
+    printf("Successfully hooked");
+}
+else
+{
+    printf("Failed to hook");
+}
