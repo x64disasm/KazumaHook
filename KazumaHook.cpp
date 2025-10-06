@@ -43,12 +43,6 @@ namespace Kazuma {
         return 16;
     }
 
-    static uintptr_t gB() {
-        Dl_info i;
-        if (!dladdr((void*)&gB, &i)) return 0;
-        return (uintptr_t)i.dli_fbase;
-    }
-
     static void* cT(void* t, void* n, size_t s) {
         s = aU(s, 4);
         if (s < 16) s = 16;
@@ -79,16 +73,12 @@ namespace Kazuma {
     }
 
     bool KazumaHook(uint64_t relativeAddr, void* detour, void** original) {
-        if (!h || !o) return false;
+        if (!detour || !original) return false;
 
-        uintptr_t base = gB();
-        if (!base) return false;
-
-        void* target = reinterpret_cast<void*>(base + r);
-        void* tramp = cT(target, h, 16);
+        void* tramp = cT(relativeAddr, detour, 16);
         if (!tramp) return false;
 
-        *o = tramp;
+        *original = tramp;
         return true;
     }
 } // namespace Kazuma
@@ -96,4 +86,5 @@ namespace Kazuma {
 extern "C" bool KazumaHook(uint64_t relativeAddr, void* detour, void** original)
 {
     return Kazuma::KazumaHook(relativeAddr, detour, original);
+
 }
