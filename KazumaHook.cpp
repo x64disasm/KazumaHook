@@ -36,7 +36,7 @@ namespace Kazuma {
     static size_t jA(void* b, uintptr_t t) {
         uint8_t* o = reinterpret_cast<uint8_t*>(b);
         uint32_t ldr = 0x58000000u | (2 << 5) | 17;
-        uint32_t br  = 0xD61F0000u | (17 << 5);
+        uint32_t br = 0xD61F0000u | (17 << 5);
         memcpy(o + 0, &ldr, 4);
         memcpy(o + 4, &br, 4);
         memcpy(o + 8, &t, 8);
@@ -59,7 +59,7 @@ namespace Kazuma {
             return nullptr;
         }
 
-        uint8_t p[32] = {0};
+        uint8_t p[32] = { 0 };
         jA(p, (uintptr_t)n);
         memcpy(t, p, 16);
 
@@ -75,8 +75,8 @@ namespace Kazuma {
     bool KazumaHook(uint64_t relativeAddr, void* detour, void** original) {
         if (!detour || !original) return false;
 
-        void* tramp = cT(relativeAddr, detour, 16);
-        if (!tramp) return false;
+        void* addr = reinterpret_cast<void*>(static_cast<uintptr_t>(relativeAddr));
+        void* tramp = cT(addr, detour, 16);
 
         *original = tramp;
         return true;
